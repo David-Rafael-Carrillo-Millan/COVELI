@@ -1,0 +1,100 @@
+{% extends './base.html' %}
+
+{% block title %}Registro{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css')}}">
+
+{% endblock %}
+
+{% block body %}
+
+<form class="form-signin" action="/registrar" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <img class="mb-4" src="{{ url_for('static', filename='img/flask.svg')}}" alt="" width="72" height="57">
+    <h1 class="h3 mb-3 fw-normal">Registrar</h1>
+
+    <div class="form-floating">
+        <!-- <label for="usuario">Usuario</label>  -->
+        <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuario">
+        <!-- <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuario" 
+        minlength="6" maxlength="20"> -->
+    </div>
+    <br />
+
+    <div class="form-floating">
+        <!-- <label for="password">Password</label> -->
+        <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+        <!-- <input type="password" class="form-control" name="password" id="password" placeholder="Password"
+        minlength="6"> -->
+    </div>
+    <br />
+
+    <div class="form-floating">
+      <!-- <label for="nombre">Nombre</label> -->
+      <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingresa tu nombre">
+    </div>
+    <br />
+
+    <div class="form-floating">
+      <!-- <label for="apellidoPaterno">Apellido Paterno</label> -->
+      <input type="text" class="form-control" name="apellidoPaterno" id="apellidoPaterno" placeholder="Ingresa tu apellido paterno">
+    </div>
+    <br />
+
+    <div class="form-floating">
+      <!-- <label for="apellidoMaterno">Apellido Materno</label> -->
+      <input type="text" class="form-control" name="apellidoMaterno" id="apellidoMaterno" placeholder="Ingresa tu apellido materno">
+    </div>
+    <br />
+
+    <div class="form-floating">
+      <!-- <label for="direccion">Direccion</label> -->
+      <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingresa tu direccion">
+    </div>
+    <br />
+
+    <div class="form-floating">
+      <!-- <label for="correo">Correo electronico</label> -->
+      <input type="email" class="form-control" name="correo" id="correo" placeholder="Ingresa tu correo">
+    </div>
+    <br />
+
+    <div class="form-floating">
+      <!-- <label for="telefono">Telefono</label> -->
+      <input type="number" class="form-control" name="telefono" id="telefono" placeholder="Ingresa tu telefono">
+    </div>
+    <br />
+    
+    <input type="hidden" name="tipousuario_id" value="2">
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Registrar</button>
+
+    {% with messages = get_flashed_messages(with_categories = True) %}
+
+    {% if messages %}
+    <br />
+    {% for category, message in messages %}
+
+    {% if category == 'warning' %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong style="font-size: 14px;">{{ message }}</strong>
+      </div>
+    {% else %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong style="font-size: 14px;">{{ message }}</strong>
+    </div>
+    {% endif %}
+
+    {% endfor %}
+    {% endif %}
+
+    {% endwith %}
+    <p class="mt-5 mb-3 text-muted">&copy; 2023</p>
+  </form>
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/login.js')}}"></script>
+{% endblock %}
+
+{% endblock %}
