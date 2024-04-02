@@ -4,6 +4,7 @@ class ModeloUsuario():
     
     @classmethod
     def login(self, db, usuario):
+        """Iniciar sesion"""
         try:
             cursor = db.connection.cursor()
             sql = """SELECT id, usuario, password 
@@ -11,11 +12,9 @@ class ModeloUsuario():
             cursor.execute(sql)
             data = cursor.fetchone()
             if data != None:
-                print(data)
                 coincide = Usuario.verificar_password(data[2], usuario.password)
-                print(data[2], usuario.password)
                 if coincide:
-                    usuario_logueado = Usuario(data[0], data[1], None, None)
+                    usuario_logueado = Usuario(data[0], data[1], None, None, None, None, None, None, None, None)
                     return usuario_logueado
                 else:
                     return None
@@ -26,40 +25,41 @@ class ModeloUsuario():
 
     @classmethod
     def obtener_por_id(self, db, id):
+        """Obtener los datos del usuario por id"""
         try:
             cursor = db.connection.cursor()
-            sql = """SELECT USU.id, USU.usuario, TIP.id, TIP.nombre 
+            sql = """SELECT USU.id, USU.usuario, USU.correo_electronico, TIP.id, TIP.nombre 
                 FROM usuario USU JOIN tipousuario TIP ON USU.tipousuario_id = TIP.id
                 WHERE USU.id = {0}""".format(id)
             cursor.execute(sql)
             data = cursor.fetchone()
-            tipousuario = TipoUsuario(data[2], data[3])
-            usuario_logueado = Usuario(data[0], data[1], None, tipousuario)
+            tipousuario = TipoUsuario(data[3], data[4])
+            usuario_logueado = Usuario(data[0], data[1], None, tipousuario, None, None, None, None, data[2], None)
             return usuario_logueado
         except Exception as ex:
             raise Exception(ex)
 
     @classmethod
     def registar_usuario(self, db, usuario):
-        """"Crear usuario"""
+        """"Metodo para que el usuario se registre"""
         try:
-            # id (NO SE ESPECIFICA)
-            # usuario
-            # password
-            # tipousuario_id (DEBE SER = 2)
             user = usuario.usuario
             password = usuario.password
             tipousuario_id = usuario.tipousuario
+            # Atributos agregados
+            nombre = usuario.nombre
+            apellido_p = usuario.apellido_p
+            apellido_m = usuario.apellido_m
+            direccion = usuario.direccion
+            correo = usuario.correo_electronico
+            telefono = usuario.telefono
 
             cursor = db.connection.cursor()
-            sql = """INSERT INTO usuario (usuario, password, tipousuario_id)
-                     VALUES ('{0}', '{1}' ,{2})""".format(user, password, tipousuario_id)
+            sql = """INSERT INTO usuario (usuario, password, tipousuario_id, nombre, apellido_paterno, apellido_materno, direccion, correo_electronico,
+                    telefono_usuario)VALUES ('{0}', '{1}' ,{2}, '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')""".format(user, password, tipousuario_id, nombre, 
+                    apellido_p, apellido_m, direccion, correo, telefono)
             cursor.execute(sql)
             db.connection.commit()
-
-            print(user)
-            print(password)
-            print(tipousuario_id)
 
             return True
         except Exception as ex:
@@ -74,12 +74,12 @@ class ModeloUsuario():
             sql = """SELECT usuario FROM usuario"""
             cursor.execute(sql)
             data = cursor.fetchall()
-            lista_sin_comas = [elemento[0] for elemento in data]
+            usuarios_db = [elemento[0] for elemento in data]
 
-            if usuario in lista_sin_comas:
-                print(f'El usuario existe')
-                return True
-            else:
-                return False
+            for usuario_db in usuarios_db:
+                if usuario.lower() == usuario_db.lower():
+                    return True
+            return False
+
         except Exception as ex:
             raise Exception(ex)

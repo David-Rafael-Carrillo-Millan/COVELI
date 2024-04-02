@@ -16,7 +16,7 @@ from .models.entities.Libro import Libro
 
 
 from .consts import *
-from .emails import confirmacion_compra 
+from .emails import confirmacion_compra, confirmacion_registro_usuario
 
 app = Flask(__name__)
 
@@ -24,9 +24,6 @@ csrf = CSRFProtect()
 db = MySQL(app)
 login_manager_app = LoginManager(app)
 mail = Mail()
-
-
-
 
 
 @login_manager_app.user_loader
@@ -48,19 +45,14 @@ def login():
     # print(f"La contraseña es: {request.form['password']}")
 
     if request.method == 'POST':
-        print(f"EL usuario es: {request.form['usuario']}")
-        print(f"La contraseña es: {request.form['password']}")
-
-        usuario = Usuario(None, request.form['usuario'], request.form['password'], None)
+        usuario = Usuario(None, request.form['usuario'], request.form['password'], None, None, None, None, None, None, None)
         usuario_logueado = ModeloUsuario.login(db,usuario)
         if usuario_logueado != None:
-            print(f"SESIÓN EXITOSA")
             login_user(usuario_logueado)
             flash(MENSAJE_BIENVENIDA, 'success')
             return redirect(url_for('index'))
         else:
             flash(LOGIN_CREDENCIALESINVALIDAS, 'warning')
-            print(f"VUELVE A INGRESAR LOS VALORES")
             return render_template('auth/login.html')
     else:
         return render_template('auth/login.html')
@@ -83,9 +75,12 @@ def registrar():
         password = request.form.get('password')
         hashed_password = generate_password_hash(password)
         tipousuario_id = request.form.get('tipousuario_id')
-        print(usuario)
-        print(hashed_password)
-        print(tipousuario_id)
+        nombre = request.form.get('nombre')
+        apellido_p = request.form.get('apellidoPaterno')
+        apellido_m = request.form.get('apellidoMaterno')
+        direccion = request.form.get('direccion')
+        correo = request.form.get('correo')
+        telefono = request.form.get('telefono')
 
         usuario_existe = ModeloUsuario.usuario_existe(db,usuario)
 
@@ -98,13 +93,14 @@ def registrar():
             flash('El contraseña debe tener al menos seis caracteres', 'warning')
         else:
             # Crear instancia de la clase usuario y se mandan los parametros
-            user = Usuario(None, usuario, hashed_password, tipousuario_id)
+            user = Usuario(None, usuario, hashed_password, tipousuario_id, nombre, apellido_p, apellido_m, direccion, correo, telefono)
 
             usuario_creado = ModeloUsuario.registar_usuario(db, user)
 
             if usuario_creado == True:
                 print('Se creo el usuario correctamente')
                 flash(USUARIO_CREADO, 'success')
+                confirmacion_registro_usuario(app, mail, correo)
                 return redirect(url_for('registrar'))
             else:
                 flash(USUARIO_ERROR, 'success')
@@ -147,7 +143,7 @@ def listar_libros():
     try:
         libros = ModeloLibro.listar_libros(db)
         data = {
-            'titulo' : 'Listado de Libros',
+            'titulo' : 'Libros',
             'libros' : libros
         }
         return render_template('listado_libros.html', data = data)
@@ -165,6 +161,7 @@ def comprar_libro():
         libro = ModeloLibro.leer_libro(db, data_request['isbn'])
         compra = Compra(None, libro, current_user)
         data['exito'] = ModeloCompra.registrar_compra(db, compra)
+
         # confirmacion_compra(mail, current_user, libro) Envio normal
         confirmacion_compra(app, mail, current_user, libro) # Envio asincrono
     except Exception as ex:
