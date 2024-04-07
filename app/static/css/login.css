@@ -134,3 +134,13 @@ cursor: pointer;
 .btn-custom2:hover {
 background-color: #ffdb5c; /* Color personalizado cuando el cursor está encima */
 }
+
+#libro  {
+  font-size: 24px; 
+  color: #2d1d95; 
+}
+
+#compra {
+  font-size: 24px; 
+  color: #ffdb5c; 
+}

@@ -3,27 +3,27 @@ from flask_mail import Message
 from flask import current_app, render_template
 from flask_login import current_user
 
-
-# def confirmacion_compra(mail, usuario, libro):
-#     try:
-#         message = Message('Confirmacion de compra de libro',
-#                             sender = current_app.config['MAIL_USERNAME'],
-#                             recipients = ['20213tn051@utez.edu.mx'])
-#         message.html = render_template('emails/confirmacion_compra.html', usuario= usuario, libro = libro)
-#         mail.send(message) 
-#     except Exception as ex:
-#         raise Exception(ex)
-
 def confirmacion_compra(app, mail, usuario, libro):
     """Envio email al comprar un libro"""
     try:
-        print(f' El usuario es: {usuario.correo_electronico}')
-        message = Message('Confirmacion de compra de libro',
-                            sender = current_app.config['MAIL_USERNAME'],
-                            recipients = [usuario.correo_electronico])
-        message.html = render_template('emails/confirmacion_compra.html', usuario= usuario, libro = libro)
-        thread = Thread(target=envio_email_async, args=[app, mail, message])
-        thread.start()
+        # Envío de correo al usuario
+        message_usuario = Message('Confirmacion de compra de libro',
+                                  sender=current_app.config['MAIL_USERNAME'],
+                                  recipients=[usuario.correo_electronico])
+        message_usuario.html = render_template('emails/confirmacion_compra_usuario.html', usuario=usuario, libro=libro)
+        
+        # Envío de correo al administrador
+        message_admin = Message('Nueva compra realizada',
+                                sender=current_app.config['MAIL_USERNAME'],
+                                recipients=['20213tn051@utez.edu.mx'])
+        message_admin.html = render_template('emails/confirmacion_compra_admin.html', usuario=usuario, libro=libro)
+
+        # Iniciar hilos para enviar correos electrónicos de forma asíncrona
+        thread_usuario = Thread(target=envio_email_async, args=[app, mail, message_usuario])
+        thread_admin = Thread(target=envio_email_async, args=[app, mail, message_admin])
+        thread_usuario.start()
+        thread_admin.start()
+
     except Exception as ex:
         raise Exception(ex)
 

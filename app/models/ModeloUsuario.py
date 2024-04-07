@@ -83,3 +83,20 @@ class ModeloUsuario():
 
         except Exception as ex:
             raise Exception(ex)
+
+    @classmethod
+    def correo_existe(self, db, correo):
+        """"Verificar si el usuario existe en la base de datos"""
+        try:
+            cursor = db.connection.cursor()
+            sql = """SELECT correo_electronico FROM usuario"""
+            cursor.execute(sql)
+            data = cursor.fetchall()
+            correos_db = [elemento[0] for elemento in data]
+
+            for correo_db in correos_db:
+                if correo.lower() == correo_db.lower():
+                    return True
+            return False
+        except Exception as ex:
+            raise Exception(ex)

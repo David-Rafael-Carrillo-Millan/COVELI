@@ -67,9 +67,6 @@ def logout():
 def registrar():
     """Funcion para que el usuario se registre"""
 
-    """Nombre completo, dirección, correo electrónico y teléfono del cliente.
-       Tras un registro exitoso, se debe enviar un correo de conformación al usuario."""
-
     if request.method == 'POST':
         usuario = request.form.get('usuario')
         password = request.form.get('password')
@@ -83,14 +80,16 @@ def registrar():
         telefono = request.form.get('telefono')
 
         usuario_existe = ModeloUsuario.usuario_existe(db,usuario)
-
+        correo_existe = ModeloUsuario.correo_existe(db,correo)
 
         if len(usuario) < 6:
             flash('El usuario debe tener al menos seis caracteres', 'warning')
+        elif len(password) < 6:
+            flash('La contraseña debe tener al menos seis caracteres', 'warning')
         elif usuario_existe == True:
             flash('El usuario ya existe en la base de datos, ingresa otro nombre', 'warning')
-        elif len(password) < 6:
-            flash('El contraseña debe tener al menos seis caracteres', 'warning')
+        elif correo_existe == True:
+            flash('El correo ya existe en la base de datos, ingresa otro correo', 'warning')
         else:
             # Crear instancia de la clase usuario y se mandan los parametros
             user = Usuario(None, usuario, hashed_password, tipousuario_id, nombre, apellido_p, apellido_m, direccion, correo, telefono)

@@ -4,6 +4,7 @@
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css')}}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 {% endblock %}
 
@@ -24,7 +25,6 @@
 
 <header id="header" class="fixed-top">
   <div class="container d-flex align-items-center">
-      <!-- <img src="{{ url_for('static', filename='img/LOGO2.png')}}" alt=""> -->
       <a class="navbar-brand" href="{{ url_for('login') }}"><img src="{{ url_for('static', filename='img/LOGO2.png')}}" alt=""></a>
       <nav class="navbar navbar-expand-lg navbar-light"></nav>
   </div>
@@ -75,28 +75,36 @@
           <form class="form-signin" action="/registrar" method="POST" name="login" id="login">
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <div class="form-outline mb-4">
-            <input type="text" class="form-control " id="usuario" name="usuario" placeholder="Ingresa tu usuario"/>
+            <input type="text" class="form-control " id="usuario" name="usuario" placeholder="Ingresa tu usuario"
+             value="{{ request.form.get('usuario', '') }}" />
           </div>
           <div class="form-outline mb-4">
-            <input type="password" class="form-control " id="password" name="password" placeholder="Ingresa tu password"/>
+            <input type="password" class="form-control " id="password" name="password" placeholder="Ingresa tu password"
+            value="{{ request.form.get('password', '') }}"/>
           </div>
           <div class="form-outline mb-4">
-            <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingresa tu nombre">
+            <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingresa tu nombre"
+            value="{{ request.form.get('nombre', '') }}">
           </div>
           <div class="form-outline mb-4">
-            <input type="text" class="form-control" name="apellidoPaterno" id="apellidoPaterno" placeholder="Ingresa tu apellido paterno">
+            <input type="text" class="form-control" name="apellidoPaterno" id="apellidoPaterno" placeholder="Ingresa tu apellido paterno"
+            value="{{ request.form.get('apellidoPaterno', '') }}">
           </div>
           <div class="form-outline mb-4">
-            <input type="text" class="form-control" name="apellidoMaterno" id="apellidoMaterno" placeholder="Ingresa tu apellido materno">
+            <input type="text" class="form-control" name="apellidoMaterno" id="apellidoMaterno" placeholder="Ingresa tu apellido materno"
+            value="{{ request.form.get('apellidoMaterno', '') }}">
           </div>
           <div class="form-outline mb-4">
-            <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingresa tu direccion">
+            <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingresa tu direccion"
+            value="{{ request.form.get('direccion', '') }}">
           </div>
           <div class="form-outline mb-4">
-            <input type="email" class="form-control" name="correo" id="correo" placeholder="Ingresa tu correo">
+            <input type="email" class="form-control" name="correo" id="correo" placeholder="Ingresa tu correo"
+            value="{{ request.form.get('correo', '') }}">
           </div>
           <div class="form-outline mb-4">
-            <input type="number" class="form-control" name="telefono" id="telefono" placeholder="Ingresa tu telefono">
+            <input type="number" class="form-control" name="telefono" id="telefono" placeholder="Ingresa tu telefono"
+            value="{{ request.form.get('telefono', '') }}">
           </div>
     
           <input type="hidden" name="tipousuario_id" value="2">
