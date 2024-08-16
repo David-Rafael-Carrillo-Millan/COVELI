@@ -5,9 +5,9 @@ class Config:
 
 class DevelopmentConfig (Config):
     DEBUG = True
-    MYSQL_HOST = 'localhost'
-    MYSQL_USER = 'root'
-    MYSQL_PASSWORD = ''
+    MYSQL_HOST = 'basededatos-integradora.cygmm3ay58vj.us-east-1.rds.amazonaws.com'
+    MYSQL_USER = 'admin'
+    MYSQL_PASSWORD = 'Tiger131217#'
     MYSQL_DB = 'tienda'
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587 # TLS: TRANSPORT LAYER SECURITY: SEGURIDAD DE LA CAPA DE TRANSPORTE
